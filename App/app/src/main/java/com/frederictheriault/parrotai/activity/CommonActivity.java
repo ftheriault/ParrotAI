@@ -1,4 +1,4 @@
-package com.frederictheriault.parrotai;
+package com.frederictheriault.parrotai.activity;
 
 import android.content.Intent;
 import android.os.AsyncTask;
