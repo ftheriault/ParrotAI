@@ -3,6 +3,8 @@ package com.frederictheriault.parrotai.activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -98,6 +100,10 @@ public class JSActivity extends CommonActivity {
             setRunningUI(false);
             droneAI.stopRunning();
             droneAI = null;
+
+            mJSDrone.setTurn((byte)0);
+            mJSDrone.setSpeed((byte)0);
+            mJSDrone.setFlag((byte)0);
         }
     }
 
@@ -122,7 +128,7 @@ public class JSActivity extends CommonActivity {
             public void onClick(View v) {
             if (droneAI == null) {
                 setRunningUI(true);
-                droneAI = new BasicAI();
+                droneAI = new BasicAI(mJSDrone);
                 droneAI.start();
             }
             }
@@ -178,7 +184,20 @@ public class JSActivity extends CommonActivity {
 
         @Override
         public void onFrameReceived(ARFrame frame) {
-            mVideoView.displayFrame(frame);
+            byte[] data = frame.getByteData();
+            Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+
+            if (droneAI != null) {
+                droneAI.getDroneState().setBitmap(bmp);
+
+                Bitmap tmp = droneAI.getDroneState().getDisplayBitmap();
+
+                if (tmp != null) {
+                    bmp = tmp;
+                }
+            }
+
+            mVideoView.displayFrame(bmp);
         }
 
         @Override

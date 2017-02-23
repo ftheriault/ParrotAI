@@ -10,12 +10,7 @@ import android.widget.ImageView;
 import com.parrot.arsdk.arcontroller.ARFrame;
 
 public class JSVideoView extends ImageView{
-
-    private static final String TAG = "JSVideoView";
-
     private final Handler mHandler;
-
-    private Bitmap mBmp;
 
     public JSVideoView(Context context) {
         super(context);
@@ -42,18 +37,13 @@ public class JSVideoView extends ImageView{
         setScaleType(ScaleType.CENTER_CROP);
     }
 
-    public void displayFrame(ARFrame frame) {
-        byte[] data = frame.getByteData();
-        synchronized (this) {
-            mBmp = BitmapFactory.decodeByteArray(data, 0, data.length);
-        }
-
+    public void displayFrame(final Bitmap mBmp) {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                synchronized (this) {
-                    setImageBitmap(mBmp);
-                }
+            synchronized (this) {
+                setImageBitmap(mBmp);
+            }
             }
         });
     }
