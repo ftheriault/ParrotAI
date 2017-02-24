@@ -270,10 +270,10 @@ public class JSDrone {
         this.setTurn((byte)0);
         this.setSpeed((byte)0);
         this.setFlag((byte)0);
-        this.setLedColor(0, 0);
+        this.setHeadlightIntensity(0, 0);
     }
 
-    public void setLedColor(int percentLeft, int percentRight) {
+    public void setHeadlightIntensity(int percentLeft, int percentRight) {
         if ((mDeviceController != null) && (mState.equals(ARCONTROLLER_DEVICE_STATE_ENUM.ARCONTROLLER_DEVICE_STATE_RUNNING))) {
             mDeviceController.getFeatureCommon().sendHeadlightsIntensity((byte)(int)(percentLeft/100.0 * 255), (byte)(int)(percentRight/100.0 * 255));
         }
@@ -284,7 +284,6 @@ public class JSDrone {
             mDeviceController.getFeatureCommon().sendAnimationsStopAllAnimations();
             mDeviceController.getFeatureJumpingSumo().sendAudioSettingsTheme(ARCOMMANDS_JUMPINGSUMO_AUDIOSETTINGS_THEME_THEME_ENUM.eARCOMMANDS_JUMPINGSUMO_AUDIOSETTINGS_THEME_THEME_UNKNOWN_ENUM_VALUE);
             mDeviceController.getFeatureJumpingSumo().sendAudioSettingsMasterVolume((byte)40);
-            Log.i("JSDrone", "Stopped all animations");
         }
     }
 

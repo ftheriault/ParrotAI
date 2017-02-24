@@ -16,7 +16,7 @@ public class BasicAI extends DroneAI {
 
         super.addModule(movingTargetModule);
 
-        drone.setLedColor(20, 20);
+        drone.setHeadlightIntensity(0, 0);
     }
 
     protected void process() {
@@ -33,6 +33,9 @@ public class BasicAI extends DroneAI {
                         } else if (target.x > 50) {
                             droneState.setRotate(Math.toRadians((dist/50.0) * 60)); // rotate on itself
                         }
+                    }
+                    else {
+                        drone.setHeadlightIntensity(20, 20);
                     }
 
                     movementDelay = 1000;
