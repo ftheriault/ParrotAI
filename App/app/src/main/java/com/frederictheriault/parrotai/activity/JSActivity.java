@@ -41,6 +41,7 @@ public class JSActivity extends CommonActivity {
 
     private TextView mBatteryLabel;
     private Button basicAIBtn;
+    private Button basicAIMvBtn;
     private Button stopBtn;
 
     @Override
@@ -120,6 +121,7 @@ public class JSActivity extends CommonActivity {
         mVideoView = (JSVideoView) findViewById(R.id.videoView);
         mBatteryLabel = (TextView) findViewById(R.id.batteryLabel);
         basicAIBtn = (Button)findViewById(R.id.basicAIBtn);
+        basicAIMvBtn = (Button)findViewById(R.id.basicAIMvBtn);
         stopBtn = (Button)findViewById(R.id.stopBtn);
 
         basicAIBtn.setOnClickListener(new View.OnClickListener() {
@@ -127,9 +129,20 @@ public class JSActivity extends CommonActivity {
             if (droneAI == null) {
                 mJSDrone.init();
                 setRunningUI(true);
-                droneAI = new BasicAI(mJSDrone);
+                droneAI = new BasicAI(mJSDrone, false);
                 droneAI.start();
             }
+            }
+        });
+
+        basicAIMvBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (droneAI == null) {
+                    mJSDrone.init();
+                    setRunningUI(true);
+                    droneAI = new BasicAI(mJSDrone, true);
+                    droneAI.start();
+                }
             }
         });
 
@@ -143,8 +156,9 @@ public class JSActivity extends CommonActivity {
     }
 
     private void setRunningUI(boolean running) {
-        stopBtn.setEnabled(running);
-        basicAIBtn.setEnabled(!running);
+        stopBtn.setVisibility(running ? Button.VISIBLE : Button.GONE);
+        basicAIMvBtn.setVisibility(!running ? Button.VISIBLE : Button.GONE);
+        basicAIBtn.setVisibility(!running ? Button.VISIBLE : Button.GONE);
     }
 
     private final JSDrone.Listener mJSListener = new JSDrone.Listener() {
