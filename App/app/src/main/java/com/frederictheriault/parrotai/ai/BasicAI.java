@@ -8,50 +8,38 @@ import com.frederictheriault.parrotai.drone.JSDrone;
 
 public class BasicAI extends DroneAI {
     private MovingTargetModule movingTargetModule;
-
-    private int turnSpeed = 0;
-    private int movSpeed = 0;
-
-    private static final int MOVING_DELAY = 15;
-    private int movingDelay;
+    private int movementDelay = 500;
 
     public BasicAI(JSDrone drone) {
         super(drone);
         movingTargetModule = new MovingTargetModule();
 
         super.addModule(movingTargetModule);
+
+        drone.setLedColor(20, 20);
     }
 
     protected void process() {
-        Point target = movingTargetModule.getTargetPercent();
+        if (getDroneState().getLastStateChanged() + movementDelay < System.currentTimeMillis()) {
+            if (!droneState.isMoving()) {
+                Point target = movingTargetModule.getTargetPercent();
 
-        if (movingDelay > 0) {
-            movingDelay--;
-            drone.setFlag((byte) 0);
+                if (target != null) {
+                    int dist = Math.abs(50 - target.x);
 
-            if (movingDelay == 0) {
-                turnSpeed = 0;
-                drone.setTurn((byte) 0);
-            }
-        }
-        else {
-            int previousTurnSpeed = turnSpeed;
+                    if (dist > 10) {
+                        if (target.x < 50) {
+                            droneState.setRotate(-Math.toRadians((dist/50.0) * 60)); // rotate on itself
+                        } else if (target.x > 50) {
+                            droneState.setRotate(Math.toRadians((dist/50.0) * 60)); // rotate on itself
+                        }
+                    }
 
-            if (target != null) {
-                if (target.x < 45) {
-                    turnSpeed = -2;
-                } else if (target.x > 45) {
-                    turnSpeed = 2;
+                    movementDelay = 1000;
                 }
-
-                //Log.i("BasicAI", target.x + "/" + target.y);
-            }
-
-            if (turnSpeed != previousTurnSpeed) {
-                movingDelay = MOVING_DELAY;
-                Log.i("BasicAI", turnSpeed + "/" + previousTurnSpeed);
-                drone.setTurn((byte) turnSpeed);
-                drone.setFlag((byte) 1);
+            } else {
+                droneState.stop();
+                movementDelay = 2000;
             }
         }
     }

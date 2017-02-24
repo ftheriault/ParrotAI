@@ -5,6 +5,8 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.parrot.arsdk.arcommands.ARCOMMANDS_COMMON_ANIMATIONS_STARTANIMATION_ANIM_ENUM;
+import com.parrot.arsdk.arcommands.ARCOMMANDS_JUMPINGSUMO_AUDIOSETTINGS_THEME_THEME_ENUM;
 import com.parrot.arsdk.arcommands.ARCOMMANDS_JUMPINGSUMO_MEDIARECORDEVENT_PICTUREEVENTCHANGED_ERROR_ENUM;
 import com.parrot.arsdk.arcontroller.ARAudioFrame;
 import com.parrot.arsdk.arcontroller.ARCONTROLLER_DEVICE_STATE_ENUM;
@@ -261,6 +263,41 @@ public class JSDrone {
     public void setSpeed(byte speed) {
         if ((mDeviceController != null) && (mState.equals(ARCONTROLLER_DEVICE_STATE_ENUM.ARCONTROLLER_DEVICE_STATE_RUNNING))) {
             mDeviceController.getFeatureJumpingSumo().setPilotingPCMDSpeed(speed);
+        }
+    }
+
+    public void stop() {
+        this.setTurn((byte)0);
+        this.setSpeed((byte)0);
+        this.setFlag((byte)0);
+        this.setLedColor(0, 0);
+    }
+
+    public void setLedColor(int percentLeft, int percentRight) {
+        if ((mDeviceController != null) && (mState.equals(ARCONTROLLER_DEVICE_STATE_ENUM.ARCONTROLLER_DEVICE_STATE_RUNNING))) {
+            mDeviceController.getFeatureCommon().sendHeadlightsIntensity((byte)(int)(percentLeft/100.0 * 255), (byte)(int)(percentRight/100.0 * 255));
+        }
+    }
+
+    public void init() {
+        if ((mDeviceController != null)) {
+            mDeviceController.getFeatureCommon().sendAnimationsStopAllAnimations();
+            mDeviceController.getFeatureJumpingSumo().sendAudioSettingsTheme(ARCOMMANDS_JUMPINGSUMO_AUDIOSETTINGS_THEME_THEME_ENUM.eARCOMMANDS_JUMPINGSUMO_AUDIOSETTINGS_THEME_THEME_UNKNOWN_ENUM_VALUE);
+            mDeviceController.getFeatureJumpingSumo().sendAudioSettingsMasterVolume((byte)40);
+            Log.i("JSDrone", "Stopped all animations");
+        }
+    }
+
+    public void pilot(byte speed, byte turn) {
+        if ((mDeviceController != null) && (mState.equals(ARCONTROLLER_DEVICE_STATE_ENUM.ARCONTROLLER_DEVICE_STATE_RUNNING))) {
+            mDeviceController.getFeatureJumpingSumo().setPilotingPCMD((byte)1, speed, turn);
+        }
+    }
+
+    public void rotate(double degree) {
+        if ((mDeviceController != null) && (mState.equals(ARCONTROLLER_DEVICE_STATE_ENUM.ARCONTROLLER_DEVICE_STATE_RUNNING))) {
+            mDeviceController.getFeatureJumpingSumo().sendPilotingAddCapOffset((float)degree);
+            Log.i("JSDrone", "rotate!" + degree);
         }
     }
 

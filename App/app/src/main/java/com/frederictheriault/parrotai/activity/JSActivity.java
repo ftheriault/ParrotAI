@@ -101,9 +101,7 @@ public class JSActivity extends CommonActivity {
             droneAI.stopRunning();
             droneAI = null;
 
-            mJSDrone.setTurn((byte)0);
-            mJSDrone.setSpeed((byte)0);
-            mJSDrone.setFlag((byte)0);
+            mJSDrone.stop();
         }
     }
 
@@ -127,6 +125,7 @@ public class JSActivity extends CommonActivity {
         basicAIBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             if (droneAI == null) {
+                mJSDrone.init();
                 setRunningUI(true);
                 droneAI = new BasicAI(mJSDrone);
                 droneAI.start();

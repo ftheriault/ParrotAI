@@ -24,15 +24,20 @@ public class MovingTargetModule extends Module {
             Bitmap tmp = calculateDiff(bmp, previousBmp);
 
             List<Point> shape = findShape(tmp);
-            Log.i("MovingTargetModule", shape.size() + "");
 
-            if (shape.size() > 0) {
+            if (shape.size() > 0 && shape.size() < (bmp.getWidth() * bmp.getHeight() * 0.35)) {
                 Integer[] border = findBorder(shape);
 
                 int x = border[0] + border[2] / 2;
                 int y = border[1] + border[3] / 2;
 
                 target = new Point(x, y);
+
+                for (int i = -3; i <= 3; i++) {
+                    tmp.setPixel(x + i, y, Color.GREEN);
+                    tmp.setPixel(x, y + i, Color.GREEN);
+                }
+
             }
             else {
                 target = null;
@@ -106,8 +111,8 @@ public class MovingTargetModule extends Module {
 
     private Bitmap calculateDiff(Bitmap image1, Bitmap image2) {
         Bitmap imageData = Bitmap.createBitmap(image1.getWidth(), image1.getHeight(), image1.getConfig());
-        int threshold = 140;
-        int skip = 8;
+        int threshold = 150;
+        int skip = 10;
 
         for (int x = skip/2; x < image1.getWidth() - skip; x+=skip) {
             for (int y = skip/2; y < image1.getHeight() - skip; y+=skip) {
@@ -117,8 +122,6 @@ public class MovingTargetModule extends Module {
                             imageData.setPixel(x2, y2, Color.BLACK);
                         }
                     }
-                } else {
-                    //imageData.setPixel(x, y, Color.WHITE);
                 }
             }
         }
